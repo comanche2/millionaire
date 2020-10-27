@@ -2,17 +2,23 @@ import React from 'react';
 import './App.css';
 import {default as questions } from './config.json'
 
+class GameOver extends React.Component {
+  render() {
+    return <div> Game over, money won: $ {this.props.money}</div>
+  }
+}
+
 class Question extends React.Component {
   render() {
-    return (
+    return questions[this.props.i] ? (
       <p> {questions[this.props.i].question} </p>
-    )
+    ) : ''
   }
 }
 
 class Answers extends React.Component {
   render() {
-    return (
+    return questions[this.props.i] ?  (
       Object.keys(questions[this.props.i]).slice(1, 5).map(el => {
         return (
           <label key={"question " + this.props.i + " answer " + el}>
@@ -26,7 +32,7 @@ class Answers extends React.Component {
           </label>
         )
       })
-    )
+    ) : ''
   }
 }
 
@@ -37,7 +43,7 @@ class MoneyWon extends React.Component {
         return (
           <div
             key={questions[el].money + ' ' + this.props.i}
-            className={ questions[el].money <= this.props.money ? 'won' : questions[el].money === this.props.money * 2 ? 'current' : ''}
+            className={ questions[el].money <= this.props.money ? 'won' : +el === this.props.i ? 'current' : ''}
           >
             $ { questions[el].money }
           </div>
@@ -72,10 +78,11 @@ class App extends React.Component{
           this.setState((state) => {
             return {
               i: state.i + 1,
-              money: state.money ? state.money * 2 : 500
+              money: questions[this.state.i].money
             }
           })
-        } else {
+        }
+        if (!result || this.state.i >= 12) {
           this.setState(() => {
             return {end: true}
           })
@@ -89,7 +96,7 @@ class App extends React.Component{
       <div className="App">
         { this.state.end
           ?
-            <div> Game over </div>
+            <GameOver money={this.state.money} />
           :
           <div className="Game">
             <Question
@@ -109,6 +116,7 @@ class App extends React.Component{
             <div className="MoneyWon_container">
               <MoneyWon
                 key={this.state.i}
+                i={this.state.i}
                 money={this.state.money || 250}
               />
             </div>
