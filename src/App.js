@@ -89,7 +89,7 @@ class App extends React.Component{
       <div className="App">
         { this.state.end
           ?
-            <div> end </div>
+            <div> Game over </div>
           :
           <div className="Game">
             <Question
