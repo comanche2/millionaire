@@ -30,6 +30,23 @@ class Answers extends React.Component {
   }
 }
 
+class MoneyWon extends React.Component {
+  render() {
+    return (
+      Object.keys(questions).map(el => {
+        return (
+          <div
+            key={questions[el].money + ' ' + this.props.i}
+            className={ questions[el].money <= this.props.money ? 'won' : questions[el].money === this.props.money * 2 ? 'current' : ''}
+          >
+            $ { questions[el].money }
+          </div>
+        )
+      })
+    )
+  }
+}
+
 const form = React.createRef()
 
 class App extends React.Component{
@@ -37,7 +54,8 @@ class App extends React.Component{
     super(props);
     this.state = {
       i: 1,
-      end: false
+      end: false,
+      money: 0
     };
     this.methods = {
       checkAnswer: (e) => {
@@ -52,7 +70,10 @@ class App extends React.Component{
         })
         if (result) {
           this.setState((state) => {
-            return {i: state.i + 1}
+            return {
+              i: state.i + 1,
+              money: state.money ? state.money * 2 : 500
+            }
           })
         } else {
           this.setState(() => {
@@ -85,6 +106,12 @@ class App extends React.Component{
                 value={"submit"}
               />
             </form>
+            <div className="MoneyWon_container">
+              <MoneyWon
+                key={this.state.i}
+                money={this.state.money || 250}
+              />
+            </div>
           </div>
         }
       </div>
